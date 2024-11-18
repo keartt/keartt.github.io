@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>이미지 라벨링 도구</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+        }
+        .image-container {
+            flex: 3;
+            position: relative;
+            overflow: hidden;
+            padding: 3rem;
+        }
+        .label-panel {
+            flex: 1;
+            padding: 20px;
+            background: #f8f8f8;
+            border-left: 1px solid #ddd;
+        }
+        canvas {
+            position: absolute;
+        }
+        .button {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+        .label-list {
+            margin-top: 20px;
+        }
+        .label-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin: 4px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .label-item.active {
+            background: #e3f2fd;
+            border-color: #2196F3;
+        }
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .resize-handle {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border: 1px solid #ff0000;
+            position: absolute;
+            cursor: nwse-resize;
+        }
+        .copy-btn {
+            color: #2196F3;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .labeling-toggle {
+            background: #f44336;
+            margin-bottom: 10px;
+        }
+        .labeling-toggle.active {
+            background: #4CAF50;
+        }
+        .label-visibility-control {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 4px;
+        }
+        .label-visibility-control input {
+            margin-right: 8px;
+        }
+        .label-color-indicator {
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .zoom-button {
+            padding: 5px 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .zoom-button:hover {
+            background: #45a049;
+        }
+        .zoom-level {
+            font-size: 14px;
+            min-width: 60px;
+            text-align: center;
+        }
+        .cursor-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 15px;
+        }
+        .cursor-button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            background: #f0f0f0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cursor-button.active {
+            background: #4CAF50;
+        }
+        .cursor-button img {
+            width: 16px;
+            height: 16px;
+        }
+        .direction-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 10px;
+    }
+    
+    .horizontal-buttons {
+        display: flex;
+        gap: 5px;
+        margin: 5px 0;
+    }
+    
+    .direction-button {
+        width: 30px;
+        height: 30px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .direction-button:hover {
+        background: #45a049;
+    }
+    .toggle-switch {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    .toggle-slider {
+        width: 34px;
+        height: 20px;
+        background-color: #ccc;
+        border-radius: 34px;
+        position: relative;
+        transition: background-color 0.2s;
+        margin-right: 10px; /* 텍스트와의 간격 */
+    }
+    .toggle-slider:before {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: white;
+        transition: transform 0.2s;
+    }
+    .toggle-switch [type="checkbox"] {
+        padding: 10px 0;
+        appearance: none;
+    }
+    input:checked + .toggle-slider {
+        background-color: #4CAF50;
+    }
+    input:checked + .toggle-slider:before {
+        transform: translateX(14px);
+    }
+    .color-box{
+        width: 13px;
+        height: 13px;
+        margin-right: 13px;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h3>라벨링 도구</h3>
+            <label class="toggle-switch">
+                <input type="checkbox" id="labelingToggle" checked/>
+                <span class="toggle-slider round"></span>
+                라벨링 on/off
+            </label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="labelTextToggle" checked />
+                <span class="toggle-slider round"></span>
+                라벨 텍스트 on/off
+            </label>
+            <input type="file" id="fileInput" accept="image/*">
+            <select id="labelSelect">
+                <option value="person" checked >사람</option>
+                <option value="car">자동차</option>
+                <option value="bicycle">자전거</option>
+                <option value="dog">강아지</option>
+                <option value="cat">고양이</option>
+            </select>
+            <button class="button" id="saveBtn">저장</button>
+            <div class="label-list" id="labelList"></div>
+            <!-- 파일 입력 버튼들 -->
+            <div class="file-inputs">
+                
+                <input type="file" id="txtFileInput" accept=".txt" style="display: none;">
+                <button onclick="document.getElementById('txtFileInput').click()">TXT 파일 읽기</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="image-container" style="height: 650px; border: 1px solid #dedede; overflow: auto; position: relative;">
+                <canvas id="canvas"></canvas>
+                
+            </div>
+
+
+            <div class="zoom-controls">
+                <button class="zoom-button" id="zoomOut">-</button>
+                <span class="zoom-level" id="zoomLevel">100%</span>
+                <button class="zoom-button" id="zoomIn">+</button>
+                <!-- 방향 버튼 추가 -->
+                <div class="direction-controls">
+                    <button class="direction-button" id="moveUp">↑</button>
+                    <div class="horizontal-buttons">
+                        <button class="direction-button" id="moveLeft">←</button>
+                        <button class="direction-button" id="moveDown">↓</button>
+                        <button class="direction-button" id="moveRight">→</button>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="label-panel">
+                <h3>라벨 토글</h3>
+                <div id="labelVisibilityControls"></div>
+                <h3>라벨 목록</h3>
+                <div id="labelListPanel"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
