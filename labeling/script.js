@@ -61,8 +61,8 @@ const zoomOut = document.getElementById('zoomOut');
 const zoomLevelDisplay = document.getElementById('zoomLevel');
 
 // 이미지 이동을 위한 변수 추가
-let centerX = -30;
-let centerY = 20;
+let centerX = 0;
+let centerY = 0;
 const PAN_STEP = 50; // 한 번에 이동할 픽셀 수
 
 // 최초 이미지 로드
@@ -402,13 +402,16 @@ function deleteBox(index) {
 function isOverBox(x, y) {
     x += centerX;
     y += centerY;
-    var okX = Math.min(activeBox.x, activeBox.x + activeBox.width) <= x
-        && x <= Math.max(activeBox.x, activeBox.x + activeBox.width);
-    var okY = Math.min(activeBox.y, activeBox.y + activeBox.height) <= x
-        && x <= Math.max(activeBox.y, activeBox.y + activeBox.height);
-    // var okY = activeBox.height >= 0 ?
-    //     (y >= activeBox.y && y <= activeBox.y + activeBox.height)
-    //     : (y >= activeBox.y +activeBox.height && y <= activeBox.y);
+    // var okX = Math.min(activeBox.x, activeBox.x + activeBox.width) <= x
+    //     && x <= Math.max(activeBox.x, activeBox.x + activeBox.width);
+    // var okY = Math.min(activeBox.y, activeBox.y + activeBox.height) <= x
+    //     && x <= Math.max(activeBox.y, activeBox.y + activeBox.height);
+    var okX = activeBox.width >= 0 ?
+        (x >= activeBox.x && x <= activeBox.x + activeBox.width)
+        : (x >= activeBox.x +activeBox.width && x <= activeBox.x);
+    var okY = activeBox.height >= 0 ?
+        (y >= activeBox.y && y <= activeBox.y + activeBox.height)
+        : (y >= activeBox.y +activeBox.height && y <= activeBox.y);
 
     return activeBox && okX &&  okY
 }
