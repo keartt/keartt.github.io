@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            min-height: 200px;
+            border: 1px solid #ddd;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            min-width: 100px;
+            min-height: 30px;
+        }
+        .table th {
+            background-color: #f2f2f2;
+            cursor: move;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .button-container {
+            margin: 20px 0;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #tableContainer {
+            min-height: 200px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="excelFile" />
+    <div class="button-container">
+        <button id="printOrder">열 순서 출력</button>
+    </div>
+    <div id="tableContainer"></div>
+</body>
+<script>
+    document.getElementById("excelFile").addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            renderDraggableTable(json);
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+
+    document.getElementById("printOrder").addEventListener("click", function() {
+        const headers = Array.from(document.querySelectorAll('th')).map(th => th.innerText);
+        console.log('현재 열 순서:', headers);
+    });
+
+    function renderDraggableTable(data) {
+        const container = document.getElementById("tableContainer");
+        container.innerHTML = "";
+
+        const table = document.createElement("table");
+        table.classList.add("table");
+        const thead = document.createElement("thead");
+        const tbody = document.createElement("tbody");
+
+        // 1. 헤더 생성 (드래그 가능)
+        const headerRow = document.createElement("tr");
+        const maxColumns = Math.max(...data.map(row => row.length), 5); // 최소 5개 컬럼
+
+        for (let i = 0; i < maxColumns; i++) {
+            const th = document.createElement("th");
+            th.innerText = data[0]?.[i] || `Column${i}`;
+            th.setAttribute("data-col-index", i);
+            headerRow.appendChild(th);
+        }
+        thead.appendChild(headerRow);
+
+        // 2. 데이터 생성
+        const maxRows = Math.max(data.length - 1, 5); // 최소 5개 행
+        for (let i = 1; i < maxRows; i++) {
+            const tr = document.createElement("tr");
+            for (let j = 0; j < maxColumns; j++) {
+                const td = document.createElement("td");
+                td.innerText = data[i]?.[j] || "";
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        container.appendChild(table);
+
+        // 3. 드래그 정렬 적용
+        Sortable.create(headerRow, {
+            animation: 150,
+            onEnd: function (evt) {
+                const from = evt.oldIndex;
+                const to = evt.newIndex;
+
+                // 모든 tbody row의 from, to 열 바꾸기
+                const rows = tbody.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = Array.from(rows[i].cells);
+                    if (cells[from] && cells[to]) {
+                        const movedCell = cells[from];
+                        const targetCell = cells[to];
+                        rows[i].insertBefore(movedCell, targetCell);
+                    }
+                }
+            }
+        });
+    }
+</script>
+</html>
