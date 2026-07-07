@@ -1,11 +1,451 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>강성현 포트폴리오</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강성현 이력서 2026</title>
+<style>
+  :root{
+    --ink:#1f2937;
+    --ink-soft:#4b5563;
+    --muted:#9ca3af;
+    --line:#e5e7eb;
+    --line-strong:#374151;
+    --accent:#4a5568;
+    --accent-soft:#eef2f7;
+    --chip-border:#d8dee6;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --blue:#2563eb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{background:#f3f4f6;}
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--ink);
+    line-height:1.6;
+    font-size:14px;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-0.01em;
+  }
+  .page{
+    max-width:820px;
+    margin:32px auto;
+    background:var(--bg);
+    padding:56px 60px 72px;
+    box-shadow:0 4px 24px rgba(0,0,0,.08);
+    border-radius:4px;
+  }
+
+  /* ---------- header ---------- */
+  .header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;}
+  .name-row{display:flex;align-items:center;gap:10px;}
+  .name{font-size:28px;font-weight:800;letter-spacing:-0.02em;}
+  .badge{
+    display:inline-block;background:var(--accent);color:#fff;
+    font-size:12px;font-weight:600;padding:3px 11px;border-radius:20px;vertical-align:middle;
+  }
+  .sub{color:var(--muted);font-size:13px;margin-top:6px;}
+  .contact{display:flex;flex-wrap:wrap;align-items:center;gap:8px 22px;margin-top:22px;font-size:13px;}
+  .contact .lbl{color:var(--muted);margin-right:7px;}
+  .contact .val{color:var(--ink);font-weight:600;}
+  .contact .sep{width:1px;height:12px;background:var(--line);}
+  .photo{
+    width:96px;height:120px;flex:none;border-radius:6px;
+    background:linear-gradient(135deg,#e9edf2,#d6dde6);
+    display:flex;align-items:center;justify-content:center;
+    color:#8a94a3;font-size:38px;font-weight:800;
+    border:1px solid var(--line);
+  }
+
+  .hr{height:1px;background:var(--line);border:0;margin:26px 0;}
+
+  /* ---------- info cards ---------- */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .card{
+    border:1px solid var(--line);border-radius:10px;padding:16px 16px 15px;
+    background:var(--card);
+  }
+  .card .ct{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;font-weight:600;margin-bottom:11px;}
+  .card .cmain{font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .card .cmain .tag{background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;}
+  .card .csub{font-size:12px;color:var(--ink-soft);margin-top:5px;}
+  .ico{width:14px;height:14px;flex:none;}
+
+  /* ---------- generic section ---------- */
+  section{margin-top:38px;}
+  .sec-title{display:flex;align-items:baseline;gap:11px;font-size:18px;font-weight:800;margin-bottom:4px;}
+  .sec-title .note{font-size:13px;font-weight:600;color:var(--accent);}
+  .sec-line{height:2px;background:var(--line-strong);border:0;margin:9px 0 22px;}
+  .sub-title{font-size:15px;font-weight:800;margin-bottom:12px;}
+
+  .intro p{margin-bottom:13px;color:var(--ink-soft);}
+  .intro p:last-child{margin-bottom:0;}
+  .intro strong{color:var(--ink);font-weight:700;}
+
+  .links{display:flex;gap:10px;margin-top:18px;}
+  .link-btn{
+    display:inline-flex;align-items:center;gap:7px;border:1px solid var(--chip-border);
+    border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--ink-soft);
+    text-decoration:none;background:#fff;
+  }
+
+  /* ---------- skills ---------- */
+  .skill-group{margin-bottom:16px;}
+  .skill-group:last-child{margin-bottom:0;}
+  .skill-label{font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:9px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    border:1px solid var(--chip-border);border-radius:20px;padding:6px 15px;
+    font-size:12.5px;font-weight:600;color:var(--ink-soft);background:#fff;
+  }
+  .chip.hot{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  /* ---------- timeline ---------- */
+  .row{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:22px 0;border-top:1px solid var(--line);}
+  .row:first-of-type{border-top:0;}
+  .row .when{font-size:13px;color:var(--ink-soft);font-weight:600;}
+  .row .when .status{display:block;color:var(--muted);font-size:12px;font-weight:500;margin-top:2px;}
+  .org{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:800;margin-bottom:3px;}
+  .org .dot{width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;}
+  .org .role{font-size:12.5px;font-weight:600;color:var(--muted);}
+  .role-line{font-size:12.5px;color:var(--muted);margin-bottom:10px;}
+  .desc{color:var(--ink-soft);font-size:13.5px;}
+  .desc li{margin:4px 0 4px 18px;}
+
+  /* project block */
+  .proj{margin-top:4px;}
+  .proj-head{font-size:14.5px;font-weight:800;color:var(--ink);}
+  .proj-meta{font-size:12.5px;color:var(--muted);margin:3px 0 12px;}
+  .proj-meta b{color:var(--accent);font-weight:700;}
+  .feat{margin-bottom:15px;}
+  .feat:last-child{margin-bottom:0;}
+  .feat .ft{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:3px;display:flex;gap:7px;align-items:center;}
+  .feat .ft::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--accent);flex:none;}
+  .feat .fb{font-size:13px;color:var(--ink-soft);padding-left:13px;}
+
+  .stack-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12.5px;}
+  .stack-table td{border:1px solid var(--line);padding:8px 11px;vertical-align:top;}
+  .stack-table td.k{background:#f9fafb;font-weight:700;color:var(--ink);white-space:nowrap;width:120px;}
+
+  .kv{font-size:13.5px;}
+  .kv .t{font-weight:800;font-size:14.5px;}
+  .kv .m{color:var(--muted);font-size:12.5px;margin-left:8px;font-weight:600;}
+  .kv .d{color:var(--ink-soft);margin-top:5px;}
+
+  @media print{
+    html,body{background:#fff;}
+    .page{box-shadow:none;margin:0;max-width:100%;padding:24px 30px;border-radius:0;}
+    section{break-inside:avoid;}
+    .row,.feat,.card{break-inside:avoid;}
+  }
+  @media (max-width:640px){
+    .page{padding:32px 22px;}
+    .cards{grid-template-columns:repeat(2,1fr);}
+    .row{grid-template-columns:1fr;gap:8px;}
+  }
+</style>
 </head>
 <body>
-  <h1>작성중</h1>
+<div class="page">
+
+  <!-- ===== HEADER ===== -->
+  <div class="header">
+    <div>
+      <div class="name-row">
+        <span class="name">강성현</span>
+        <span class="badge">경력</span>
+      </div>
+      <div class="sub">남, 1997 (<span id="age"></span>) · Java 백엔드 개발자</div>
+
+      <div class="contact">
+        <span><span class="lbl">이메일</span><span class="val">shkang@all4land.com</span></span>
+        <span class="sep"></span>
+        <span><span class="lbl">휴대폰</span><span class="val">010-****-2924</span></span>
+        <span class="sep"></span>
+        <span><span class="lbl">주소</span><span class="val">인천 동구</span></span>
+      </div>
+    </div>
+    <!-- <div class="photo">강</div> -->
+  </div>
+
+  <hr class="hr">
+
+  <!-- ===== INFO CARDS ===== -->
+  <div class="cards">
+    <div class="card">
+      <div class="ct">💼 경력</div>
+      <div class="cmain">㈜올포랜드 <span class="tag">재직중</span></div>
+      <div class="csub">총 <span class="js-tenure"></span></div>
+    </div>
+    <div class="card">
+      <div class="ct">🎓 학력</div>
+      <div class="cmain">군산대학교</div>
+      <div class="csub">대학교(4년) 졸업</div>
+    </div>
+    <div class="card">
+      <div class="ct">📜 자격</div>
+      <div class="cmain">정보처리기사</div>
+      <div class="csub">2024.09 취득</div>
+    </div>
+    <div class="card">
+      <div class="ct">🗂 포지션</div>
+      <div class="cmain">백엔드 / 풀스택</div>
+      <div class="csub">Java · Spring · GIS</div>
+    </div>
+  </div>
+
+  <!-- ===== 간략 소개 ===== -->
+  <section class="intro">
+    <div class="sub-title">간략 소개</div>
+    <p>
+      <strong>3년차 Java 백엔드 개발자</strong>로, Spring Boot 기반 웹 서비스와 PostgreSQL/PostGIS 공간 데이터 처리,
+      지도 기반 GIS 서비스 개발을 주력으로 합니다. 세션 인증을 JWT로 전환하고 OAuth2·RBAC 기반 인증/인가 체계를
+      직접 설계하는 등 <strong>백엔드 아키텍처를 주도</strong>해 온 경험이 있습니다.
+    </p>
+    <p>
+      Java 백엔드를 중심으로 <strong>React 프론트엔드(Cesium·Three.js 3D/GIS)와 Python(FastAPI) 데이터·AI 연계 서버까지</strong>
+      서비스 전 계층을 직접 구현한 풀스택 역량을 갖추고 있으며, LangChain 기반 RAG 스마트검색 등 AI 연계 프로젝트도 수행했습니다.
+    </p>
+    <p>
+      기능 구현보다 <strong>유지보수성과 성능</strong>을 우선하며, 성능 문제는 추측이 아닌 실행계획(EXPLAIN)과 로그를 근거로
+      분석·개선하는 것을 원칙으로 합니다. 효율적인 협업과 확장 가능한 구조 설계를 중요하게 생각합니다.
+    </p>
+    <div class="links">
+      <a class="link-btn" href="https://github.com/keartt" target="_blank">🐙 Github</a>
+      <a class="link-btn" href="https://keartt.tistory.com/" target="_blank">🔗 Blog</a>
+    </div>
+  </section>
+
+  <hr class="hr" style="margin-top:34px;">
+
+  <!-- ===== 스킬 ===== -->
+  <section style="margin-top:26px;">
+    <div class="sub-title">나의 스킬</div>
+
+    <div class="skill-group">
+      <div class="skill-label">Backend</div>
+      <div class="chips">
+        <span class="chip hot">Java 11 / 17</span>
+        <span class="chip hot">Spring Boot</span>
+        <span class="chip">Spring Security</span>
+        <span class="chip">Spring Data JPA</span>
+        <span class="chip">MyBatis</span>
+        <span class="chip">REST API</span>
+        <span class="chip">JWT / OAuth2</span>
+        <span class="chip">SSE</span>
+        <!-- <span class="chip">Quartz</span> -->
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-label">Database · GIS</div>
+      <div class="chips">
+        <span class="chip hot">PostgreSQL</span>
+        <span class="chip hot">PostGIS</span>
+        <span class="chip">Redis</span>
+        <!-- <span class="chip">SQL 튜닝 / Index</span> -->
+        <span class="chip">Hibernate Spatial</span>
+        <!-- <span class="chip">JTS / proj4j</span> -->
+        <span class="chip">GeoServer</span>
+        <span class="chip">OpenLayers</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-label">Frontend</div>
+      <div class="chips">
+        <span class="chip">React 19</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">Vite</span>
+        <span class="chip">Zustand</span>
+        <span class="chip">TailwindCSS</span>
+        <span class="chip">Cesium</span>
+        <span class="chip">Three.js / web-ifc</span>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-label">AI · Data · DevOps</div>
+      <div class="chips">
+        <span class="chip">Python / FastAPI</span>
+        <span class="chip">LangChain</span>
+        <span class="chip">Ollama</span>
+        <span class="chip">PGVector (RAG)</span>
+        <span class="chip">Docker</span>
+        <span class="chip">Nginx</span>
+        <span class="chip">Linux</span>
+        <span class="chip">Git / GitLab</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 경력 ===== -->
+  <section>
+    <div class="sec-title">경력 <span class="note">총 <span class="js-tenure"></span></span></div>
+    <hr class="sec-line">
+
+    <div class="row">
+      <div class="when">2023.05 ~ 재직중<span class="status">약 <span class="js-tenure"></span></span></div>
+      <div>
+        <div class="org"><span class="dot">✓</span>㈜올포랜드 <span class="role">사원 · 백엔드/서버개발</span></div>
+        <div class="role-line">전자정부 기반 SI · 디지털 트윈 / 공간정보 플랫폼 사업 수행</div>
+        <ul class="desc">
+          <li>디지털 트윈·공간정보 플랫폼의 백엔드 REST API 개발 및 서버 관리·배포 담당</li>
+          <li>Linux 개발/운영 서버 구축, WEB/WAS 환경 설정 및 Docker 기반 배포·운영</li>
+          <li>PostgreSQL/PostGIS 공간 데이터 처리 및 외부 기관 API 연계 개발</li>
+          <!-- <li>팀 내 최초로 Docker를 도입해 운영 환경 적용 효율화</li> -->
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 경력기술서 / 대표 프로젝트 ===== -->
+  <section>
+    <div class="sec-title">경력기술서 <span class="note">대표 프로젝트</span></div>
+    <hr class="sec-line">
+
+    <!-- 안전워치 -->
+    <div class="row">
+      <div class="when">2025.05 ~ 진행중<span class="status">백엔드 리드 · 풀스택</span></div>
+      <div class="proj">
+        <div class="proj-head">안전워치(SmartWatch) — 건축물·시설물 안전관리 통합 플랫폼</div>
+        <div class="proj-meta">
+          <b>기여도 90% 이상 주도</b> · 공공 건축물·시설물 안전관리(위반건축물·3종시설물·녹색건축물·건축물관리법 점검·3D BIM 결함탐지·실시간 안전 알림)
+        </div>
+
+        <div class="feat">
+          <div class="ft">Spring Boot 안전관리 백엔드 아키텍처 설계·구축</div>
+          <div class="fb">19개 REST 컨트롤러 / 26개 서비스 / 33개 엔티티(약 18.7k LOC) 규모의 백엔드를 설계. 감사 필드 엔티티는 JPA로, 복잡한 통계·동적 검색 쿼리는 MyBatis(XML)로 분리한 이중 영속성 하이브리드 구조로 생산성과 조회 성능을 동시에 확보.</div>
+        </div>
+
+        <div class="feat">
+          <div class="ft">세션 → JWT 인증 전환 및 통합 인증 허브 구축</div>
+          <div class="fb">RS256 서명 키를 PEM으로 로드해 secret 노출 없이 토큰을 발급·검증. Access Token은 httpOnly 쿠키, Refresh Token claims는 Redis에 저장하고, RT 회전 발급 + 사용자당 토큰 수를 Redis ZSet으로 추적해 초과 시 최고령 토큰을 자동 폐기. OAuth2 소셜 로그인(Google/Kakao/Naver)과 역할 기반 페이지 권한(RBAC)을 자체 구현하고, 다수 연계 프로젝트의 로그인을 대신 처리하는 인증 허브로 운영.</div>
+        </div>
+
+        <div class="feat">
+          <div class="ft">실시간 안전 알림 시스템 (SSE)</div>
+          <div class="fb">SseEmitter 기반 실시간 알림을 구축하고 Redis 캐시로 다중 클라이언트 알림 성능을 최적화. 점검 기한 기준으로 점검예정·기한도래·기한초과 상태를 자동 판정해 별도 조작 없이 알림 상태가 갱신되도록 구현.</div>
+        </div>
+
+        <div class="feat">
+          <div class="ft">공간정보(GIS) 처리 및 지오코딩</div>
+          <div class="fb">PostGIS + Hibernate Spatial/JTS로 공간 객체를 JPA에서 직접 영속화. proj4j로 TM 중부원점(EPSG:5179/5186)↔WGS84 좌표 변환을 구현하고, 주소→좌표 지오코딩과 지도 통합판 타일 생성을 스케줄러 배치로 자동화.</div>
+        </div>
+
+        <div class="feat">
+          <div class="ft">3D BIM 파이프라인 및 외부 시스템 연계</div>
+          <div class="fb">IFC 3D 모델 업로드 → 파싱 → GLB 변환 → 3D 타일 생성 파이프라인을 Spring 스케줄러 배치로 자동화. 도로명주소·VWorld·ITS CCTV·건축물대장·Google Analytics 등 이질적 외부 시스템을 공통 API 클라이언트로 추상화하고, 성균관대 AI 결함탐지 서버와는 REST + SSHJ(SFTP)로 결과 파일·이미지 수집 파이프라인을 구축.</div>
+        </div>
+
+        <div class="feat">
+          <div class="ft">풀스택 — React 3D 지도·BIM 뷰어 & Python AI 연계</div>
+          <div class="fb">React 19 + Vite + TailwindCSS 기반 3D 안전관리 플랫폼(약 49k LOC)을 주도 개발. Cesium(3D 지도)과 Three.js/web-ifc(BIM 뷰어)를 통합하고 라벨 디클러터링·POI 클러스터링 등 대용량 3D 렌더링 UX를 개선. Python/FastAPI로 IFC 변환 서버와 LangChain·Ollama·PGVector 기반 RAG 스마트검색 서버를 구축해 백엔드와 연계.</div>
+        </div>
+
+        <table class="stack-table">
+          <tr><td class="k">Backend</td><td>Java 11, Spring Boot 2.7, Spring Security, OAuth2, JWT(RS256), JPA + MyBatis, Redis, SSE, Apache POI, SSHJ, Swagger</td></tr>
+          <tr><td class="k">Database</td><td>PostgreSQL / PostGIS, Redis, Hibernate Spatial, JTS, proj4j</td></tr>
+          <tr><td class="k">Frontend</td><td>React 19, Vite, TailwindCSS, Zustand, Cesium, Three.js / web-ifc</td></tr>
+          <tr><td class="k">AI / Data</td><td>Python 3.11, FastAPI, LangChain, Ollama, PGVector, ifcopenshell</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 이전 프로젝트 -->
+    <div class="row">
+      <div class="when">2023.05 ~ 2025.04<span class="status">백엔드 / 서버</span></div>
+      <div class="proj">
+        <div class="proj-head">디지털 트윈 · 공간정보 플랫폼 (SI)</div>
+        <div class="proj-meta">서울 S-MAP 유지보수 · 속초/용인시 디지털 트윈 플랫폼 · 경북 지능형 공간정보 플랫폼</div>
+        <ul class="desc">
+          <li><b>서울시 S-MAP 유지보수</b> — 디지털 트윈 서비스 유지보수 및 업무 응대</li>
+          <li><b>속초 · 용인시 디지털 트윈</b> — Ubuntu·PostgreSQL·Tomcat·Apache 서버 설치·설정부터 배포까지 수행, 국가교통정보센터 CCTV API 연동 및 스케줄링, 유동인구·시설물 데이터 가공 API 개발</li>
+          <li><b>경북 지능형 공간정보</b> — 전체 서버 설정 및 Docker 컨테이너 배포, 신규 연계 데이터 처리 API를 비동기 방식으로 개선해 처리 속도 400% 향상, 학습관리 툴 기능 개발</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 학력 ===== -->
+  <section>
+    <div class="sec-title">학력 <span class="note">대학교(4년) 졸업</span></div>
+    <hr class="sec-line">
+    <div class="row">
+      <div class="when">2016.03 ~ 2023.02<span class="status">졸업</span></div>
+      <div class="kv">
+        <div><span class="t">군산대학교 (4년제)</span><span class="m">IT정보제어공학부 (IT융합통신공학전공)</span></div>
+        <div class="d">학점 3.46 / 4.5 </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 자격/어학/수상 ===== -->
+  <section>
+    <div class="sec-title">자격증</div>
+    <hr class="sec-line">
+    <div class="row">
+      <div class="when">2024.09</div>
+      <div class="kv"><span class="t">정보처리기사</span><span class="m">최종합격 · 한국산업인력공단</span></div>
+    </div>
+    <!-- <div class="row">
+      <div class="when">2022.06</div>
+      <div class="kv"><span class="t">2종 보통운전면허</span><span class="m">최종합격 · 경찰청(운전면허시험관리단)</span></div>
+    </div> -->
+  </section>
+
+  <!-- ===== 취업우대사항 ===== -->
+  <section>
+    <div class="sec-title">취업우대사항</div>
+    <hr class="sec-line">
+    <div class="row">
+      <div class="when">병역 : 군필</div>
+      <div class="kv"><span class="d" style="margin-top:0;">육군 / 병장 · 만기전역 · 2017.08 ~ 2019.04</span></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  /* ===== 자동 계산 설정 (필요 시 이 값만 수정) ===== */
+  var BIRTH_DATE = "1997-07-31";   // 생년월일 (만나이 계산용)
+  var HIRE_DATE  = "2023-05-01";   // 입사일 (재직기간 계산용)
+
+  (function () {
+    var today = new Date();
+
+    /* --- 만나이 계산 --- */
+    function calcAge(birthStr) {
+      var b = new Date(birthStr);
+      var age = today.getFullYear() - b.getFullYear();
+      var m = today.getMonth() - b.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
+      return age;
+    }
+
+    /* --- 재직기간(년/개월) 계산 --- */
+    function calcTenure(hireStr) {
+      var h = new Date(hireStr);
+      var months = (today.getFullYear() - h.getFullYear()) * 12 + (today.getMonth() - h.getMonth());
+      if (today.getDate() < h.getDate()) months--;
+      if (months < 0) months = 0;
+      var years = Math.floor(months / 12);
+      var rest = months % 12;
+      var parts = [];
+      if (years > 0) parts.push(years + "년");
+      parts.push(rest + "개월");
+      return parts.join(" ");
+    }
+
+    var ageEl = document.getElementById("age");
+    if (ageEl) ageEl.textContent = calcAge(BIRTH_DATE) + "세";
+
+    var tenure = calcTenure(HIRE_DATE);
+    document.querySelectorAll(".js-tenure").forEach(function (el) {
+      el.textContent = tenure;
+    });
+  })();
+</script>
 </body>
 </html>
